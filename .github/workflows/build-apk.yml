@@ -1,0 +1,52 @@
+name: Build Flutter APK
+
+on:
+  push:
+    branches: [ main, master ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: Set up Flutter
+      uses: subosito/flutter-action@v2
+      with:
+        flutter-version: '3.19.x'
+        channel: 'stable'
+
+    - name: Build Real Dhan Raj Games APK
+      run: |
+        cd flutter_app
+        
+        # Missing Android configuration fix karein
+        flutter create . --platforms=android
+        
+        # Asli main file dhoondho jisme 'void main' likha ho
+        MAIN_FILE=$(grep -rl "void main" lib/ | head -n 1)
+        
+        if [ -z "$MAIN_FILE" ]; then
+          echo "Error: Asli main.dart file nahi mili!"
+          exit 1
+        fi
+        
+        echo "Asli Main File mil gayi: $MAIN_FILE"
+        
+        flutter pub get
+        flutter build apk --release --target="$MAIN_FILE"
+
+    - name: Upload APK Artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: app-release
+        path: flutter_app/build/app/outputs/flutter-apk/app-release.apk

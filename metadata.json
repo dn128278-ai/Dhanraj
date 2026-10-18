@@ -1,0 +1,6 @@
+{
+  "name": "Dhan Raj Games - Online Matka & Gaming Platform",
+  "description": "Official Dhan Raj Games mobile application with live market rates, instant fund management, secure mPIN authentication, and fast support.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
